@@ -192,8 +192,6 @@ Page {
         }
     }
 
-
-
     // Channel names list
     Flickable {
         anchors { left: parent.left; top: timeline.bottom; bottom: parent.bottom }
@@ -222,6 +220,7 @@ Page {
                         id: channelLogo
                         anchors { left: parent.left; right: parent.right;
                             verticalCenter: parent.verticalCenter }
+                        height: rowHeight
                         anchors.margins: 2
                         source: "qrc:/" + channelModel.channel
                         fillMode: Image.PreserveAspectFit

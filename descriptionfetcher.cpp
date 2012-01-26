@@ -1,7 +1,6 @@
 #include "descriptionfetcher.h"
 
 #include <QtNetwork/QtNetwork>
-#include <QtWebKit>
 #include "guidedata.h"
 
 DescriptionFetcher::DescriptionFetcher(QObject *parent) :
@@ -28,12 +27,13 @@ void DescriptionFetcher::fetchDescription(QString channel, int program)
 
 void DescriptionFetcher::handleReply(QNetworkReply *reply)
 {
-    QWebPage page;
-    page.mainFrame()->setHtml(reply->readAll());
-    QWebElement document = page.mainFrame()->documentElement();
-    QWebElement element = document.findFirst("p.programDescription");
+    QString text = reply->readAll();
 
-    QString description = QString::fromUtf8(element.toPlainText().toStdString().c_str());
+    QString matchText = "<p class=\"programDescription\">";
+    int a = text.indexOf(matchText) + matchText.length();
+    int b = text.indexOf("</p>", a);
+
+    QString description = QString::fromUtf8(text.mid(a, b - a).toStdString().c_str());
 
     m_description = description;
 

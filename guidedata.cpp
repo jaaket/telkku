@@ -17,8 +17,6 @@ GuideData::GuideData()
     path.append(QDir::separator()).append("my.db.sqlite");
     path = QDir::toNativeSeparators(path);
 
-    qDebug() << path;
-
     db.setDatabaseName(path);
     db.open();
 
