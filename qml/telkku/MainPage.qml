@@ -10,23 +10,7 @@ Page {
     property int minRowHeight: 40
     property int rowHeight: Math.max(minRowHeight, 1.0 * flickable.height / channelItems.count)
 
-    ListModel {
-        id: channelItems
-    }
-
-    function init() {
-        for (var i = 0; i < 10; ++i) {
-            var comp = Qt.createComponent("ListingModel.qml");
-
-            var obj = comp.createObject(appWindow);
-
-            channelItems.append({ "channelModel" : comp.createObject(appWindow,
-                                                                     { "channel" : availableChannels[i] }),
-                                  "color" : Colors.colors[i % Colors.colors.length] });
-
-            channelItems.get(i).channelModel.fetchData();
-        }
-
+    function initFlickablePosition() {
         var date = new Date;
         flickable.contentX = (date.getHours() + date.getMinutes() / 60.0 - 0.5) * widthScale;
     }
@@ -54,7 +38,7 @@ Page {
             }
         }
 
-        Component.onCompleted: init();
+        Component.onCompleted: initFlickablePosition();
     }
 
     // Channel row delegate
@@ -295,5 +279,13 @@ Page {
     QueryDialog {
         id: descriptionDialog
         message: descriptionFetcher.description
+    }
+
+    tools: ToolBarLayout {
+        ToolIcon {
+            anchors.right: parent.right
+            iconId: "toolbar-settings"
+            onClicked: appWindow.pageStack.push(optionsPage);
+        }
     }
 }
