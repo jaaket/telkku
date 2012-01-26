@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="MTV3">images/MTV3.png</file>
+        <file alias="MTV3 Fakta">images/MTV3 Fakta.png</file>
+        <file alias="MTV3 Juniori">images/MTV3 Juniori.png</file>
+        <file alias="MTV3 Komedia">images/MTV3 Komedia.png</file>
+        <file alias="MTV3 Leffa">images/MTV3 Leffa.png</file>
+        <file alias="MTV3 MAX">images/MTV3 Max.png</file>
+        <file alias="MTV3 Sarja">images/MTV3 Sarja.png</file>
+        <file alias="MTV3 Scifi">images/MTV3 Scifi.png</file>
+        <file alias="TV2">images/TV2.svg</file>
+        <file alias="TV1">images/TV1.png</file>
+        <file alias="Nelonen">images/Nelonen.svg</file>
+        <file alias="Sub">images/Sub.png</file>
+        <file alias="FST5">images/FST5.svg</file>
+        <file alias="JIM">images/JIM.svg</file>
+        <file alias="TV5">images/TV5.svg</file>
+        <file alias="The Voice">images/The Voice.svg</file>
+        <file alias="YLE Teema">images/YLE Teema.svg</file>
+    </qresource>
+</RCC>
