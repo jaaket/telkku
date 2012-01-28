@@ -1,0 +1,7 @@
+BUGFIXES:
+*Handle programs that begin before or end after midnight
+*Highlight movement in options page causes view to scroll
+
+FEATURES:
+*Add method to return to current time (perhaps a gesture?)
+
