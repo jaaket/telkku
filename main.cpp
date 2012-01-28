@@ -2,7 +2,7 @@
 #include <QtDeclarative>
 #include "qmlapplicationviewer.h"
 #include "listingmodel.h"
-#include "telkkudata.h"
+#include "guidedata.h"
 #include "descriptionfetcher.h"
 #include <iostream>
 
@@ -13,7 +13,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QScopedPointer<QApplication> app(createApplication(argc, argv));
     qmlRegisterType<ListingModel>("Jake", 1, 0, "ListingModel");
 
-    TelkkuData *guideData = new TelkkuData;
+    GuideData *guideData = new GuideData;
 
     DescriptionFetcher *descriptionFetcher = new DescriptionFetcher;
     descriptionFetcher->setGuideData(guideData);

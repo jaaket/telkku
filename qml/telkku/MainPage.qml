@@ -5,7 +5,6 @@ import Qt.labs.components 1.1
 import "colors.js" as Colors
 
 Page {
-    id: page
     property double widthScale: 500.0
     property int minRowHeight: 40
     property int rowHeight: Math.max(minRowHeight, 1.0 * flickable.height / channelItems.count)

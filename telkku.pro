@@ -36,7 +36,6 @@ SOURCES += main.cpp \
     tvshow.cpp \
     guidedata.cpp \
     yledata.cpp \
-    telkkudata.cpp \
     descriptionfetcher.cpp
 
 # Please do not modify the following two lines. Required for deployment.
@@ -50,15 +49,16 @@ OTHER_FILES += \
     qtc_packaging/debian_harmattan/copyright \
     qtc_packaging/debian_harmattan/control \
     qtc_packaging/debian_harmattan/compat \
-    qtc_packaging/debian_harmattan/changelog
+    qtc_packaging/debian_harmattan/changelog \
+    TODO.txt
 
 HEADERS += \
     listingmodel.h \
     tvshow.h \
     guidedata.h \
     yledata.h \
-    telkkudata.h \
     descriptionfetcher.h
 
 RESOURCES += \
     application.qrc
+

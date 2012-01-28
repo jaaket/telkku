@@ -83,7 +83,7 @@ Page {
     tools: ToolBarLayout {
         ToolIcon {
             iconId: "toolbar-back"
-            onClicked: appWindow.pageStack.pop()
+            onClicked: appWindow.pageStack.pop();
         }
         ToolIcon {
             iconId: "toolbar-delete"
@@ -91,6 +91,7 @@ Page {
         }
         ToolIcon {
             iconId: "toolbar-add"
+            onClicked: selectionDialog.open();
         }
         ToolIcon {
             iconId: "toolbar-down"
@@ -108,6 +109,24 @@ Page {
                                     listView.currentIndex - 1, 1);
                 listView.currentIndex = listView.currentIndex + 1;
                 listView.currentIndex = listView.currentIndex - 1;
+            }
+        }
+    }
+
+    MultiSelectionDialog {
+        id: selectionDialog
+        titleText: "Add Channel"
+        model: availableChannels
+        acceptButtonText: "Add"
+        delegate: Item {
+            width: parent.width
+            height: 20
+
+            Text {
+                anchors.fill: parent
+                color: "white"
+                font.pixelSize: 20
+                text: modelData
             }
         }
     }

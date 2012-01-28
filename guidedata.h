@@ -5,20 +5,22 @@
 #include <QtSql>
 #include "tvshow.h"
 
+class QNetworkAccessManager;
+class QWebPage;
+
 class GuideData : public QObject
 {
     Q_OBJECT
 public:
     GuideData();
+    ~GuideData();
 
-    virtual void fetchData(const QStringList &channels,
-                           const QDate &date = QDate::currentDate()) = 0;
-
-    QList<TVShow> getListing(const QString &channel) const;
+    void fetchData(const QStringList &channels,
+                   const QDate &date = QDate::currentDate());
 
     const QStringList& availableChannels() const;
 
-    virtual QString descriptionUrl(QString channel, int program) const = 0;
+    QList<TVShow> getListing(const QString &channel) const;
 
     QDateTime lastUpdated(QString channel) const;
 
@@ -29,13 +31,26 @@ public:
 
 protected:
     QStringList m_availableChannels;
+    QHash<QString, int> m_channelNumbers;
     QHash<QString, QList<TVShow> > m_listings;
 
     bool m_busy;
 
+    QDate m_requestedDate;
+    QStringList m_channelsToRequest;
+
+    QNetworkAccessManager *m_nam;
+
+    QWebPage *m_page;
+
+    QString buildUrl(const QString &channel, QDate date) const;
+
 signals:
     void startedFetch(QString channel);
     void channelReady(QString channel);
+
+private slots:
+    void parseData();
 };
 
 #endif // GuideData_H

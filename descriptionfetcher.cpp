@@ -19,7 +19,7 @@ DescriptionFetcher::~DescriptionFetcher()
 void DescriptionFetcher::fetchDescription(QString channel, int program)
 {
     QNetworkRequest request;
-    request.setUrl(QUrl(m_guideData->descriptionUrl(channel, program)));
+    request.setUrl(QUrl(m_guideData->getListing(channel).at(program).descriptionUrl()));
     m_description = "Loading description";
     emit descriptionChanged(m_description);
     m_nam->get(request);
