@@ -74,7 +74,9 @@ Page {
                 anchors.fill: parent
                 opacity: 1.0
                 radius: 10
-                color: row.color
+                border.color: row.color
+                border.width: 2
+                color: "transparent"
             }
 
             Text {
