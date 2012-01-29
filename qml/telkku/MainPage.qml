@@ -27,6 +27,12 @@ Page {
         flickableDirection: rowHeight == minRowHeight ?
                                 Flickable.HorizontalAndVerticalFlick : Flickable.HorizontalFlick
 
+        Behavior on contentX {
+            PropertyAnimation {
+                easing.type: Easing.InOutQuad
+            }
+        }
+
         Column {
             move: Transition {
                 NumberAnimation { properties: "x, y"; easing.type: Easing.InOutQuad }
@@ -286,7 +292,11 @@ Page {
 
     tools: ToolBarLayout {
         ToolIcon {
-            anchors.right: parent.right
+            iconId: "toolbar-home"
+            onClicked: initFlickablePosition();
+        }
+
+        ToolIcon {
             iconId: "toolbar-settings"
             onClicked: appWindow.pageStack.push(optionsPage);
         }

@@ -17,5 +17,8 @@
         <file alias="TV5">images/TV5.svg</file>
         <file alias="The Voice">images/The Voice.svg</file>
         <file alias="YLE Teema">images/YLE Teema.svg</file>
+        <file alias="Nelonen Pro 2">images/Nelonen Pro 2.png</file>
+        <file alias="Liv">images/Liv.svg</file>
+        <file alias="SuomiTV">images/SuomiTV.jpg</file>
     </qresource>
 </RCC>

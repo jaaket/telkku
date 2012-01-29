@@ -1,8 +1,8 @@
 BUGFIXES:
-*Handle programs that begin before or end after midnight
 *Highlight movement in options page causes view to scroll
+*Highlight in options page doesn't stay in the center in landscape mode
 
 FEATURES:
-*Add method to return to current time (perhaps a gesture?)
 *Add search funtion
+*Add notification system (calendar integration?)
 
