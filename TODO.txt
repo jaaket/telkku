@@ -4,4 +4,5 @@ BUGFIXES:
 
 FEATURES:
 *Add method to return to current time (perhaps a gesture?)
+*Add search funtion
 

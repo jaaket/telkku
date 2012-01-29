@@ -18,12 +18,12 @@ void TVShow::setDescription(QString description)
     m_description = description;
 }
 
-void TVShow::setStartTime(QTime startTime)
+void TVShow::setStartTime(QDateTime startTime)
 {
     m_startTime = startTime;
 }
 
-void TVShow::setEndTime(QTime endTime)
+void TVShow::setEndTime(QDateTime endTime)
 {
     m_endTime = endTime;
 }
@@ -48,12 +48,12 @@ QString TVShow::description() const
     return m_description;
 }
 
-QTime TVShow::startTime() const
+QDateTime TVShow::startTime() const
 {
     return m_startTime;
 }
 
-QTime TVShow::endTime() const
+QDateTime TVShow::endTime() const
 {
     return m_endTime;
 }

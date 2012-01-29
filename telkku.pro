@@ -35,7 +35,6 @@ SOURCES += main.cpp \
     listingmodel.cpp \
     tvshow.cpp \
     guidedata.cpp \
-    yledata.cpp \
     descriptionfetcher.cpp
 
 # Please do not modify the following two lines. Required for deployment.
@@ -56,7 +55,6 @@ HEADERS += \
     listingmodel.h \
     tvshow.h \
     guidedata.h \
-    yledata.h \
     descriptionfetcher.h
 
 RESOURCES += \

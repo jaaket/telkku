@@ -19,6 +19,7 @@ class ListingModel : public QAbstractListModel
         StartTimeSecsRole,
         ChannelRole,
         LengthRole,
+        DayOffsetRole
     };
 
 public:

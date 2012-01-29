@@ -7,12 +7,12 @@ ListingModel::ListingModel(QObject *parent) :
 
 {
      QHash<int, QByteArray> roles;
-     roles[ChannelRole] = "channel";
      roles[NameRole] = "name";
      roles[StartTimeRole] = "startTime";
      roles[EndTimeRole] = "endTime";
-     roles[StartTimeSecsRole] = "startTimeSecs";
+     roles[ChannelRole] = "channel";
      roles[LengthRole] = "length";
+     roles[DayOffsetRole] = "dayOffset";
      setRoleNames(roles);
 
      m_guideData = ListingModel::defaultGuideData;
@@ -89,18 +89,16 @@ QVariant ListingModel::data(const QModelIndex &index, int role) const
 
     if (role == NameRole)
         return m_guideData->getListing(m_channel).at(index.row()).name();
-    else if (role == ChannelRole)
-        return m_channel;
-    else if (role == StartTimeSecsRole) {
-        QTime start = m_guideData->getListing(m_channel).at(index.row()).startTime();
-        return (double)QTime(0, 0).secsTo(start) / 3600.0;
-    }
     else if (role == StartTimeRole)
         return m_guideData->getListing(m_channel).at(index.row()).startTime();
     else if (role == EndTimeRole)
         return m_guideData->getListing(m_channel).at(index.row()).endTime();
+    else if (role == ChannelRole)
+        return m_channel;
     else if (role == LengthRole)
         return m_guideData->getListing(m_channel).at(index.row()).duration();
+    else if (role == DayOffsetRole)
+        return QDateTime::currentDateTime().daysTo(m_guideData->getListing(m_channel).at(index.row()).startTime());
     else
         return QVariant();
 }

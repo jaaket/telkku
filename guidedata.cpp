@@ -153,8 +153,10 @@ void GuideData::saveChannel(QString channel)
     foreach (TVShow show, m_listings.value(channel)) {
         query.bindValue(":name", show.name());
         query.bindValue(":channel", channel);
-        query.bindValue(":startTime", show.startTime().toString("hh:mm"));
-        query.bindValue(":endTime", show.endTime().toString("hh:mm"));
+        query.bindValue(":startTime",
+                        show.startTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
+        query.bindValue(":endTime",
+                        show.endTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
         query.bindValue(":description", show.description());
         query.bindValue(":descriptionUrl", show.descriptionUrl());
         ok = query.exec();
@@ -181,8 +183,10 @@ void GuideData::loadDatabase()
     while (query.next()) {
         TVShow show;
         show.setName(query.value(1).toString());
-        show.setStartTime(QTime::fromString(query.value(3).toString(), "hh:mm"));
-        show.setEndTime(QTime::fromString(query.value(4).toString(), "hh:mm"));
+        show.setStartTime(QDateTime::fromString(query.value(3).toString(),
+                                                "yyyy-MM-dd hh:mm:ss.zzz"));
+        show.setEndTime(QDateTime::fromString(query.value(4).toString(),
+                                              "yyyy-MM-dd hh:mm:ss.zzz"));
         show.setDescription(query.value(5).toString());
         show.setDescriptionUrl(query.value(6).toString());
 
@@ -212,7 +216,8 @@ void GuideData::loadChannel(QString channel)
     query.exec();
 
     if (!query.next()) {
-        qDebug() << "Requested channel" << channel << "doesn't exist in database!";
+        qDebug() << "Requested channel" << channel <<
+                    "doesn't exist in database!";
         return;
     }
 
@@ -223,8 +228,10 @@ void GuideData::loadChannel(QString channel)
     while (query.next()) {
         TVShow show;
         show.setName(query.value(1).toString());
-        show.setStartTime(QTime::fromString(query.value(3).toString(), "hh:mm"));
-        show.setEndTime(QTime::fromString(query.value(4).toString(), "hh:mm"));
+        show.setStartTime(QDateTime::fromString(query.value(3).toString(),
+                                                "yyyy-MM-dd hh:mm:ss.zzz"));
+        show.setEndTime(QDateTime::fromString(query.value(4).toString(),
+                                              "yyyy-MM-dd hh:mm:ss.zzz"));
         show.setDescription(query.value(5).toString());
         show.setDescriptionUrl(query.value(6).toString());
 
@@ -246,7 +253,8 @@ void GuideData::fetchData(const QStringList &channels, const QDate &date)
     m_requestedDate = date;
 
     if (!m_busy) {
-        m_page->mainFrame()->load(QUrl(buildUrl(m_channelsToRequest.first(), m_requestedDate)));
+        m_page->mainFrame()->load(QUrl(buildUrl(m_channelsToRequest.first(),
+                                                m_requestedDate)));
         m_busy = true;
     }
 }
@@ -273,7 +281,12 @@ void GuideData::parseData()
         QWebElement nameElement = elements.at(i).findFirst("td.progName");
 
         TVShow show;
-        show.setStartTime(QTime::fromString(timeElement.toPlainText(), "hh.mm"));
+
+        QDateTime startTime = QDateTime::currentDateTime();
+        startTime.setTime(QTime::fromString(timeElement.toPlainText(),
+                                            "hh.mm"));
+
+        show.setStartTime(startTime);
         show.setName(nameElement.findFirst("a").toPlainText());
 
         QString url = nameElement.findFirst("a").attribute("href");
@@ -282,14 +295,37 @@ void GuideData::parseData()
         m_listings[requestedChannel].append(show);
     }
 
-    for (int i = 0; i < m_listings[requestedChannel].size(); ++i) {
-        QTime end;
-        if (i < m_listings[requestedChannel].size() - 1)
-            end = m_listings[requestedChannel].at(i + 1).startTime();
-        else
-            end = m_listings[requestedChannel].at(i).startTime().addSecs(3600);
+    bool nextDay = false;
 
-        m_listings[requestedChannel][i].setEndTime(end);
+    for (int i = 0; i < m_listings[requestedChannel].size(); ++i) {
+        if (i < m_listings[requestedChannel].size() - 1) {
+            QDateTime endTime = m_listings[requestedChannel].at(i + 1).startTime();
+            m_listings[requestedChannel][i].setEndTime(endTime);
+        } else {
+            QDateTime endTime = m_listings[requestedChannel].at(i).startTime();
+            m_listings[requestedChannel][i].setEndTime(endTime.addSecs(3600));
+        }
+
+        // Handle programs starting or ending after midnight
+        if (i < 2) continue;
+
+        if (nextDay || m_listings[requestedChannel].at(i).endTime().time() <
+                m_listings[requestedChannel].at(i - 1).startTime().time()) {
+            m_listings[requestedChannel][i].setEndTime(m_listings[requestedChannel].at(i).endTime().addDays(1));
+
+            if (nextDay || m_listings[requestedChannel].at(i).startTime().time() <
+                    m_listings[requestedChannel].at(i - 1).startTime().time()) {
+                m_listings[requestedChannel][i].setStartTime(m_listings[requestedChannel].at(i).startTime().addDays(1));
+            }
+
+            nextDay = true;
+        }
+    }
+
+    // Handle the case where the first program starts before midnight
+    if (m_listings[requestedChannel].first().startTime().time() >
+            m_listings[requestedChannel].first().endTime().time()) {
+        m_listings[requestedChannel].first().setStartTime(m_listings[requestedChannel].first().startTime().addDays(-1));
     }
 
     emit channelReady(requestedChannel);
@@ -299,7 +335,8 @@ void GuideData::parseData()
     m_channelsToRequest.removeFirst();
 
     if (!m_channelsToRequest.isEmpty()) {
-        m_page->mainFrame()->load(QUrl(buildUrl(m_channelsToRequest.first(), m_requestedDate)));
+        m_page->mainFrame()->load(QUrl(buildUrl(m_channelsToRequest.first(),
+                                                m_requestedDate)));
     } else {
         m_busy = false;
     }

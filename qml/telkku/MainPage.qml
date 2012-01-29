@@ -8,6 +8,7 @@ Page {
     property double widthScale: 500.0
     property int minRowHeight: 40
     property int rowHeight: Math.max(minRowHeight, 1.0 * flickable.height / channelItems.count)
+    property date today: new Date;
 
     function initFlickablePosition() {
         var date = new Date;
@@ -64,7 +65,8 @@ Page {
         Item {
             height: rowHeight
             width: length * widthScale
-            x: startTimeSecs * widthScale
+            //x: startTimeSecs * widthScale
+            x: (dayOffset * 24 + startTime.getHours() + startTime.getMinutes() / 60.0) * widthScale
 
             Rectangle {
                 id: rect
