@@ -27,7 +27,7 @@ symbian:TARGET.CAPABILITY += NetworkServices
 CONFIG += qdeclarative-boostable
 QT += network webkit sql
 
-# Add dependency to Symbian components
+# Add dependency to Symbian component
 # CONFIG += qt-components
 
 # The .cpp file which was generated for your project. Feel free to hack it.

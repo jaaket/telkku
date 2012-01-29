@@ -1,8 +1,6 @@
 BUGFIXES:
-*Highlight movement in options page causes view to scroll
-*Highlight in options page doesn't stay in the center in landscape mode
 
 FEATURES:
+*Add funcitonality to add channels
 *Add search funtion
 *Add notification system (calendar integration?)
-

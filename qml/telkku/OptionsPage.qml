@@ -1,15 +1,16 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import "colors.js" as Colors
+import "UIConstants.js" as UIConstants
 
 Page {
+    property real rowHeight: Math.max(UIConstants.minRowHeight, 1.0 * listView.height / channelItems.count)
     ListView {
         id: listView
         anchors.fill: parent
         model: channelItems
         highlight: highlight
-        preferredHighlightBegin: 300
-        preferredHighlightEnd: 500
+        preferredHighlightBegin: 0.3 * height
+        preferredHighlightEnd: 0.7 * height
         highlightRangeMode: ListView.ApplyRange
 
         MouseArea {
@@ -23,7 +24,7 @@ Page {
 
         delegate: Item {
             width: parent.width
-            height: 80
+            height: rowHeight
 
             Behavior on pos.y {
                 SpringAnimation {
@@ -35,8 +36,19 @@ Page {
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: 2
-                radius: 10
-                color: model.color
+                border.color: model.color
+                border.width: UIConstants.borderWidth
+                radius: UIConstants.rectangleRadius
+                color: "transparent"
+            }
+
+            Text {
+                anchors { top: parent.top; bottom: parent.bottom;
+                    left: parent.left; right: parent.horizontalCenter;
+                    margins: 10 }
+                color: "white"
+                font.pixelSize: 20
+                text: channelModel.channel
             }
 
             Image {
@@ -48,20 +60,12 @@ Page {
                 }
 
                 id: image
-                anchors.fill: parent
-                anchors.margins: 4
+                anchors { top: parent.top; bottom: parent.bottom;
+                    left: parent.horizontalCenter; right: parent.right;
+                    margins: 10 }
                 source: "qrc:/" + channelModel.channel
                 smooth: true
                 fillMode: Image.PreserveAspectFit
-            }
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 40
-                color: "white"
-                visible: image.status == Image.Error
-                text: channelModel.channel
             }
         }
 
@@ -74,9 +78,9 @@ Page {
         id: highlight
         Rectangle {
             width: parent.width
-            height: 80
-            radius: 10
-            color: "white"
+            height: rowHeight
+            radius: UIConstants.rectangleRadius
+            color: UIConstants.mainColor
         }
     }
 

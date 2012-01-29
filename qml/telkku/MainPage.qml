@@ -2,12 +2,11 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 import Jake 1.0
 import Qt.labs.components 1.1
-import "colors.js" as Colors
+import "UIConstants.js" as UIConstants
 
 Page {
     property double widthScale: 500.0
-    property int minRowHeight: 40
-    property int rowHeight: Math.max(minRowHeight, 1.0 * flickable.height / channelItems.count)
+    property int rowHeight: Math.max(UIConstants.minRowHeight, 1.0 * flickable.height / channelItems.count)
     property date today: new Date;
 
     function initFlickablePosition() {
@@ -24,12 +23,12 @@ Page {
         }
         contentWidth: 24 * widthScale
         contentHeight: channelItems.count * rowHeight
-        flickableDirection: rowHeight == minRowHeight ?
+        flickableDirection: rowHeight == UIConstants.minRowHeight ?
                                 Flickable.HorizontalAndVerticalFlick : Flickable.HorizontalFlick
 
         Behavior on contentX {
             PropertyAnimation {
-                easing.type: Easing.InOutQuad
+                easing.type: Easing.OutExpo
             }
         }
 
@@ -79,9 +78,9 @@ Page {
                 anchors.margins: 2
                 anchors.fill: parent
                 opacity: 1.0
-                radius: 10
+                radius: UIConstants.rectangleRadius
                 border.color: row.color
-                border.width: 2
+                border.width: UIConstants.borderWidth
                 color: "transparent"
             }
 
@@ -91,7 +90,7 @@ Page {
                 anchors.margins: 10
                 verticalAlignment: Text.AlignVCenter
                 text: name
-                font.pixelSize: rowHeight / 2
+                font.pixelSize: 20
                 color: "white"
                 elide: Text.ElideRight
             }
@@ -119,7 +118,7 @@ Page {
         width: 360
         anchors { left: parent.left; right: parent.right; top: parent.top; }
         height: 40
-        color: "white"
+        color: UIConstants.mainColor
     }
 
     // Timeline content
@@ -137,11 +136,13 @@ Page {
                         verticalAlignment: Text.AlignVCenter
                         pos.x: -35
                         height: 40
-                        text: Qt.formatTime(new Date(0, 0, 0, 0, index * 30, 0, 0), "hh:mm")
+                        color: "white"
                         font.pixelSize: index % 2 === 0 ? 30 : 20
+                        text: Qt.formatTime(new Date(0, 0, 0, 0, index * 30, 0, 0), "hh:mm")
                     }
 
                     Rectangle {
+                        anchors.top: timeline.bottom
                         pos.x: -4
                         width: 8
                         height: 854
@@ -185,17 +186,24 @@ Page {
         }
     }
 
-    // Channel names list
+    // Channel list background
+    Rectangle {
+        anchors { left: parent.left; top: timeline.bottom; bottom: parent.bottom }
+        width: 60
+        color: UIConstants.mainColor
+    }
+
+    // Channel list
     Flickable {
         anchors { left: parent.left; top: timeline.bottom; bottom: parent.bottom }
-        width: 100
+        width: 60
         contentY: flickable.contentY
         contentHeight: channelItems.count * rowHeight
         clip: true
         interactive: false
 
         Column {
-            width: rowHeight
+            width: 60
 
             move: Transition {
                 NumberAnimation { properties: "x, y"; easing.type: Easing.InOutQuad }
@@ -218,16 +226,6 @@ Page {
                         source: "qrc:/" + channelModel.channel
                         fillMode: Image.PreserveAspectFit
                         smooth: true
-                    }
-
-                    Rectangle {
-                        anchors { verticalCenter: parent.verticalCenter;
-                            horizontalCenter: parent.horizontalCenter }
-                        width: 60
-                        height: rowHeight * 0.5
-                        color: "black"
-                        radius: 10
-                        visible: channelLogo.status == Image.Error
                     }
 
                     Text {

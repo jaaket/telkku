@@ -1,7 +1,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import Jake 1.0
-import "colors.js" as Colors
+import "UIConstants.js" as UIConstants
 
 PageStackWindow {
     id: appWindow
@@ -18,7 +18,7 @@ PageStackWindow {
 
             channelItems.append({ "channelModel" : comp.createObject(appWindow,
                                                                      { "channel" : availableChannels[i] }),
-                                  "color" : Colors.colors[i % Colors.colors.length] });
+                                  "color" : UIConstants.colors[i % UIConstants.colors.length] });
 
             channelItems.get(i).channelModel.fetchData();
         }
