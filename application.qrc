@@ -11,7 +11,6 @@
         <file alias="TV1">images/TV1.png</file>
         <file alias="Sub">images/Sub.png</file>
         <file alias="Nelonen Pro 2">images/Nelonen Pro 2.png</file>
-        <file alias="SuomiTV">images/SuomiTV.jpg</file>
         <file alias="YLE Teema">images/YLE Teema.png</file>
         <file alias="Nelonen">images/Nelonen.png</file>
         <file alias="TV2">images/TV2.png</file>
@@ -20,5 +19,6 @@
         <file alias="TV5">images/TV5.png</file>
         <file alias="The Voice">images/The Voice.png</file>
         <file alias="Liv">images/Liv.png</file>
+        <file alias="SuomiTV">images/SuomiTV.png</file>
     </qresource>
 </RCC>

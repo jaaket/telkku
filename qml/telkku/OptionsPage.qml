@@ -27,19 +27,16 @@ Page {
             height: rowHeight
 
             Behavior on pos.y {
-                SpringAnimation {
-                    spring: 5
-                    damping: 0.2
+                PropertyAnimation {
+                    easing.type: Easing.InOutCubic
                 }
             }
 
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: 2
-                border.color: model.color
-                border.width: UIConstants.borderWidth
                 radius: UIConstants.rectangleRadius
-                color: "transparent"
+                color: model.color
             }
 
             Text {
@@ -80,7 +77,10 @@ Page {
             width: parent.width
             height: rowHeight
             radius: UIConstants.rectangleRadius
-            color: UIConstants.mainColor
+            border.width: 2
+            border.color: "white"
+            color: "#80FFFFFF"
+            z: 2
         }
     }
 

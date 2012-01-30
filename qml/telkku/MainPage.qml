@@ -142,7 +142,6 @@ Page {
                     }
 
                     Rectangle {
-                        anchors.top: timeline.bottom
                         pos.x: -4
                         width: 8
                         height: 854
@@ -186,13 +185,6 @@ Page {
         }
     }
 
-    // Channel list background
-    Rectangle {
-        anchors { left: parent.left; top: timeline.bottom; bottom: parent.bottom }
-        width: 60
-        color: UIConstants.mainColor
-    }
-
     // Channel list
     Flickable {
         anchors { left: parent.left; top: timeline.bottom; bottom: parent.bottom }
@@ -216,6 +208,11 @@ Page {
                     width: parent.width
                     height: rowHeight
                     opacity: 1.0
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: model.color
+                    }
 
                     Image {
                         id: channelLogo
@@ -295,7 +292,7 @@ Page {
         }
 
         ToolIcon {
-            iconId: "toolbar-settings"
+            iconId: "toolbar-view-menu"
             onClicked: appWindow.pageStack.push(optionsPage);
         }
     }
