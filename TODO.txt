@@ -1,6 +1,5 @@
 BUGFIXES:
 
 FEATURES:
-*Add funcitonality to add channels
 *Add search funtion
 *Add notification system (calendar integration?)

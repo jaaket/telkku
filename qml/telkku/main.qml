@@ -10,17 +10,30 @@ PageStackWindow {
         id: channelItems
     }
 
+    ListModel {
+        id: addableChannels
+    }
+
+    function addChannel(channel) {
+        var comp = Qt.createComponent("ListingModel.qml");
+        channelItems.append({ "channelModel" : comp.createObject(appWindow, { "channel" : channel }),
+                              "color" : UIConstants.colors[channelItems.count % UIConstants.colors.length] });
+        channelItems.get(channelItems.count - 1).channelModel.fetchData();
+        for (var i = 0; i < addableChannels.count; ++i) {
+            if (addableChannels.get(i).name == channel) {
+                addableChannels.remove(i);
+                break;
+            }
+        }
+    }
+
     function initChannelItems() {
         for (var i = 0; i < 16; ++i) {
-            var comp = Qt.createComponent("ListingModel.qml");
+            addChannel(availableChannels[i]);
+        }
 
-            var obj = comp.createObject(appWindow);
-
-            channelItems.append({ "channelModel" : comp.createObject(appWindow,
-                                                                     { "channel" : availableChannels[i] }),
-                                  "color" : UIConstants.colors[i % UIConstants.colors.length] });
-
-            channelItems.get(i).channelModel.fetchData();
+        for (i = 16; i < availableChannels.length; ++i) {
+            addableChannels.append({ "name" : availableChannels[i] });
         }
     }
 

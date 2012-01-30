@@ -91,7 +91,10 @@ Page {
         }
         ToolIcon {
             iconId: "toolbar-delete"
-            onClicked: listView.model.remove(listView.currentIndex);
+            onClicked: {
+                addableChannels.append({ "name" : listView.model.get(listView.currentIndex).channelModel.channel });
+                listView.model.remove(listView.currentIndex);
+            }
         }
         ToolIcon {
             iconId: "toolbar-add"
@@ -100,8 +103,11 @@ Page {
         ToolIcon {
             iconId: "toolbar-down"
             onClicked: {
-                listView.model.move(listView.currentIndex,
-                                    listView.currentIndex + 1, 1);
+                if (listView.currentIndex == listView.model.count - 1)
+                    listView.model.move(listView.currentIndex, 0, 1);
+                else
+                    listView.model.move(listView.currentIndex,
+                                        listView.currentIndex + 1, 1);
                 listView.currentIndex = listView.currentIndex + 1;
                 listView.currentIndex = listView.currentIndex - 1;
             }
@@ -109,28 +115,33 @@ Page {
         ToolIcon {
             iconId: "toolbar-up"
             onClicked: {
-                listView.model.move(listView.currentIndex,
-                                    listView.currentIndex - 1, 1);
+                if (listView.currentIndex == 0)
+                    listView.model.move(listView.currentIndex,
+                                        listView.count - 1, 1);
+                else
+                    listView.model.move(listView.currentIndex,
+                                        listView.currentIndex - 1, 1);
                 listView.currentIndex = listView.currentIndex + 1;
                 listView.currentIndex = listView.currentIndex - 1;
             }
         }
     }
 
+
     MultiSelectionDialog {
         id: selectionDialog
         titleText: "Add Channel"
-        model: availableChannels
+        model: addableChannels
         acceptButtonText: "Add"
-        delegate: Item {
-            width: parent.width
-            height: 20
+        onAccepted: {
+            var channels = new Array;
+            for (var i = 0; i < selectedIndexes.length; ++i) {
+                channels.push(model.get(selectedIndexes[i]).name);
+            }
+            selectedIndexes = [];
 
-            Text {
-                anchors.fill: parent
-                color: "white"
-                font.pixelSize: 20
-                text: modelData
+            for (i = 0; i < channels.length; ++i) {
+                addChannel(channels[i]);
             }
         }
     }
