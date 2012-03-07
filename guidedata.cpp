@@ -1,5 +1,5 @@
 #include "guidedata.h"
-#include <QtWebKit>
+#include <QtNetwork>
 
 GuideData::GuideData()
 {
@@ -78,10 +78,9 @@ GuideData::GuideData()
     }
 
     m_nam = new QNetworkAccessManager(this);
-    m_page = new QWebPage(this);
 
-    connect(m_page, SIGNAL(loadFinished(bool)),
-            this, SLOT(parseData()));
+    connect(m_nam, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(parseData(QNetworkReply*)));
 
     m_busy = false;
 }
@@ -89,7 +88,6 @@ GuideData::GuideData()
 GuideData::~GuideData()
 {
     delete m_nam;
-    delete m_page;
 }
 
 const QStringList& GuideData::availableChannels() const
@@ -253,8 +251,9 @@ void GuideData::fetchData(const QStringList &channels, const QDate &date)
     m_requestedDate = date;
 
     if (!m_busy) {
-        m_page->mainFrame()->load(QUrl(buildUrl(m_channelsToRequest.first(),
-                                                m_requestedDate)));
+        QNetworkRequest req;
+        req.setUrl(QUrl(buildUrl(m_channelsToRequest.first(), m_requestedDate)));
+        m_nam->get(req);
         m_busy = true;
     }
 }
@@ -267,30 +266,34 @@ QString GuideData::buildUrl(const QString &channel, QDate date) const
     return url;
 }
 
-void GuideData::parseData()
+void GuideData::parseData(QNetworkReply *reply)
 {
     QString requestedChannel = m_channelsToRequest.first();
 
-    QWebElement document = m_page->mainFrame()->documentElement();
-    QWebElementCollection elements = document.findAll("table.programTable tr");
+    QString html = QString::fromUtf8(reply->readAll());
 
-    m_listings[requestedChannel] = QList<TVShow>();
-
-    for (int i = 0; i < elements.count(); ++i) {
-        QWebElement timeElement = elements.at(i).findFirst("td.progTime");
-        QWebElement nameElement = elements.at(i).findFirst("td.progName");
-
+    html.remove(0, html.indexOf("programTable\">") + 16);
+    int start;
+    while ((start = html.indexOf("<tr class=\"\">")) != -1) {
         TVShow show;
 
+        html.remove(0, start);
+
+        QRegExp rx("<td class=\"progTime\">([0-9.]*)</td>");
+        rx.indexIn(html);
+
         QDateTime startTime = QDateTime::currentDateTime();
-        startTime.setTime(QTime::fromString(timeElement.toPlainText(),
+        startTime.setTime(QTime::fromString(rx.cap(1),
                                             "hh.mm"));
 
-        show.setStartTime(startTime);
-        show.setName(nameElement.findFirst("a").toPlainText());
+        QRegExp rx2("<td class=\"progName\"><a href=\"([^>]+)\">([^<]+)</a></td>");
+        rx2.indexIn(html);
 
-        QString url = nameElement.findFirst("a").attribute("href");
-        show.setDescriptionUrl(url);
+        show.setStartTime(startTime);
+        show.setDescriptionUrl(rx2.cap(1));
+        show.setName(rx2.cap(2));
+
+        html.remove(0, html.indexOf("</tr>"));
 
         m_listings[requestedChannel].append(show);
     }
@@ -335,8 +338,9 @@ void GuideData::parseData()
     m_channelsToRequest.removeFirst();
 
     if (!m_channelsToRequest.isEmpty()) {
-        m_page->mainFrame()->load(QUrl(buildUrl(m_channelsToRequest.first(),
-                                                m_requestedDate)));
+        QNetworkRequest req;
+        req.setUrl(QUrl(buildUrl(m_channelsToRequest.first(), m_requestedDate)));
+        m_nam->get(req);
     } else {
         m_busy = false;
     }

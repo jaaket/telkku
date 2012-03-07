@@ -6,7 +6,7 @@
 #include "tvshow.h"
 
 class QNetworkAccessManager;
-class QWebPage;
+class QNetworkReply;
 
 class GuideData : public QObject
 {
@@ -41,8 +41,6 @@ protected:
 
     QNetworkAccessManager *m_nam;
 
-    QWebPage *m_page;
-
     QString buildUrl(const QString &channel, QDate date) const;
 
 signals:
@@ -50,7 +48,7 @@ signals:
     void channelReady(QString channel);
 
 private slots:
-    void parseData();
+    void parseData(QNetworkReply *reply);
 };
 
 #endif // GuideData_H
