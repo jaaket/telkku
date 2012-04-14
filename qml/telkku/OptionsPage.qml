@@ -4,6 +4,7 @@ import "UIConstants.js" as UIConstants
 
 Page {
     property real rowHeight: Math.max(UIConstants.minRowHeight, 1.0 * listView.height / channelItems.count)
+
     ListView {
         id: listView
         anchors.fill: parent

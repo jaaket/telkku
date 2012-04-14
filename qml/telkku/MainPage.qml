@@ -153,8 +153,6 @@ Page {
         }
     }
 
-
-
     // Current time indicator
     Flickable {
         contentX: flickable.contentX

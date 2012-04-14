@@ -28,13 +28,29 @@ PageStackWindow {
     }
 
     function initChannelItems() {
-        for (var i = 0; i < 16; ++i) {
-            addChannel(availableChannels[i]);
-        }
-
-        for (i = 16; i < availableChannels.length; ++i) {
+        for (var i = 0; i < availableChannels.length; ++i) {
             addableChannels.append({ "name" : availableChannels[i] });
         }
+
+        var db = openDatabaseSync("TelkkuSettingsDB", "1.0",
+                                  "Settings for telkku", 10000);
+
+        db.readTransaction(
+            function(tx) {
+                var result = tx.executeSql("SELECT * FROM channels");
+
+                if (result.rows.length > 0) {
+                    for (var i = 0; i < result.rows.length; ++i) {
+                        addChannel(result.rows.item(i).name);
+                    }
+                } else {
+                    for (var i = 0; i < 16; ++i) {
+                        addChannel(availableChannels[i]);
+                    }
+
+                }
+            }
+        )
     }
 
     initialPage: mainPage
@@ -42,7 +58,37 @@ PageStackWindow {
     MainPage {
         id: mainPage
 
-        Component.onCompleted: initChannelItems();
+        Component.onCompleted: {
+            var db = openDatabaseSync("TelkkuSettingsDB", "1.0",
+                                      "Settings for telkku", 10000);
+
+            // Create settings database on initialization if needed
+            db.transaction(
+                 function(tx) {
+                    tx.executeSql('CREATE TABLE IF NOT EXISTS \
+                                  channels(id INTEGER PRIMARY KEY, name TEXT)');
+                }
+            )
+
+            initChannelItems();
+        }
+
+        // Save channel settings on exit
+        Component.onDestruction: {
+            var db = openDatabaseSync("TelkkuSettingsDB", "1.0",
+                                      "Settings for telkku", 10000);
+
+            db.transaction(
+                function(tx) {
+                    tx.executeSql('DELETE FROM channels');
+
+                    for (var i = 0; i < channelItems.count; ++i) {
+                        tx.executeSql('INSERT INTO channels (name) VALUES (?)',
+                                      channelItems.get(i).channelModel.channel);
+                    }
+                }
+            )
+        }
     }
 
     OptionsPage {
